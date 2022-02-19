@@ -11,25 +11,6 @@ from skimage import io
 import pandas as pd
 
 
-def double_exp(x, rate1, amp1, rate2, amp2, offset):
-    return amp1*(1-np.exp(-rate1*x))+amp2*(1-np.exp(-rate2*x)) + offset
-
-def single_exp(x, rate1, amp1, offset):
-    return amp1*(1-np.exp(-rate1*x)) + offset
-
-def single_exp_with_sigmoid(x, rate1, amp1, alpha, tau):
-    return amp1*(1/(1+np.exp(-alpha*(x-tau))))*(1-np.exp(-rate1*(x-tau)))
-
-def chi2(ydata,Nparams,f,*params):
-    res = ydata - f(*params)
-    redchi2 = sum(res**2)/(len(ydata)-Nparams)
-    return res, redchi2
-
-def chi2abs(ydata,yErr,Nparams,f,*params):
-    res = ydata - f(*params)
-    redchi2 = sum((res/yErr)**2)/(len(ydata)-Nparams)
-    return res, redchi2
-
 def get_first_sub_image(coord, first_frame, shape):
     cluster_pixels = first_frame[coord[0]-int(shape[0]/2): coord[0]+int(round(shape[0]/2) + 1), \
         coord[1]-int(shape[1]/2): coord[1]+int(round(shape[1]/2) + 1)]
@@ -37,11 +18,6 @@ def get_first_sub_image(coord, first_frame, shape):
 
 def get_se_coord_intensity(coord, kinetics_stack):
     return kinetics_stack[:, coord[0], coord[1]]
-
-def get_cluster_intensity_stack(coord, kinetics_stack, shape):
-    cluster_pixels = kinetics_stack[:, coord[0]-int(shape[0]/2): coord[0]+int(round(shape[0]/2) + 1), \
-        coord[1]-int(shape[1]/2): coord[1]+int(round(shape[1]/2) + 1)]
-    return cluster_pixels
 
 def compare_images(image_list, rc, image_title_list):
     rows= rc[0]
@@ -99,14 +75,6 @@ def do_constellation_mapping(se_cluster_pos, fq_cluster_pos):
     non_mutual_hits = se_to_fq ^ fq_to_se
     
     return (mutual_hits, non_mutual_hits)
-
-def get_mutation(s1, s2):
-    assert len(s1) == len(s2), "The lengths of the two sequences are different"
-    mut_list = []
-    for i, (c1, c2) in enumerate(zip(s1, s2)):
-        if c1 != c2:
-            mut_list.append("".join([str(i), c1]))
-    return mut_list
 
 def make_image_from_coords(coords, image_size):
     image = np.zeros(shape=image_size, dtype=np.float32)
