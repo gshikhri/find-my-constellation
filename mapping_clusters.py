@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from collections import defaultdict
 from scipy.spatial import KDTree, distance
 from scipy.optimize import curve_fit
-from skimage import io
 import pandas as pd
 
 
@@ -98,85 +97,85 @@ def get_target_tile_subimage(aligned_tile, aligned_rc, image_size, tile_physical
                                                                       aligned_rc[1] - pad:aligned_rc[1] + image_size[1] + pad]
     return tile_fastq_sub_image
 
-se_cluster_pos = np.transpose(np.where(se_sub_image == 1)).tolist()
-fq_cluster_pos = np.transpose(np.where(aligned_fq_sub_image == 1)).tolist()
+# se_cluster_pos = np.transpose(np.where(se_sub_image == 1)).tolist()
+# fq_cluster_pos = np.transpose(np.where(aligned_fq_sub_image == 1)).tolist()
 
-mutual_hits, non_mutual_hits = do_constellation_mapping(se_cluster_pos, fq_cluster_pos)
+# mutual_hits, non_mutual_hits = do_constellation_mapping(se_cluster_pos, fq_cluster_pos)
 
-exclusive_hits = get_exclusive_hits(mutual_hits, non_mutual_hits)
+# exclusive_hits = get_exclusive_hits(mutual_hits, non_mutual_hits)
 
-hit_se_clusters = [se_cluster_pos[i[0]] for i in exclusive_hits]
-hit_fq_clusters = [fq_cluster_pos[i[1]] for i in exclusive_hits]
+# hit_se_clusters = [se_cluster_pos[i[0]] for i in exclusive_hits]
+# hit_fq_clusters = [fq_cluster_pos[i[1]] for i in exclusive_hits]
 
-# hit_se_image = make_image_from_coords(hit_se_clusters, image_size=(sub_image_size, sub_image_size))
-# hit_fq_image = make_image_from_coords(hit_fq_clusters, image_size=(sub_image_size, sub_image_size))
+# # hit_se_image = make_image_from_coords(hit_se_clusters, image_size=(sub_image_size, sub_image_size))
+# # hit_fq_image = make_image_from_coords(hit_fq_clusters, image_size=(sub_image_size, sub_image_size))
 
-# compare_images([hit_se_image, hit_fq_image], rc=(1, 2), \
+# # compare_images([hit_se_image, hit_fq_image], rc=(1, 2), \
+# #     image_title_list=['filtered_se_image', 'filtered_fq_image'])
+
+
+# filtered_se_clusters, filtered_fq_clusters, distance_list = filter_hit_clusters(hit_se_clusters, hit_fq_clusters)
+
+# filtered_se_image = make_image_from_coords(filtered_se_clusters, image_size=(sub_image_size, sub_image_size))
+# filtered_fq_image = make_image_from_coords(filtered_fq_clusters, image_size=(sub_image_size, sub_image_size))
+
+# compare_images([filtered_se_image, filtered_fq_image], rc=(1, 2), \
 #     image_title_list=['filtered_se_image', 'filtered_fq_image'])
 
+# io.imsave('filtered_se_image_point.tif', filtered_se_image)
+# io.imsave('filtered_fq_image_point.tif', filtered_fq_image)
 
-filtered_se_clusters, filtered_fq_clusters, distance_list = filter_hit_clusters(hit_se_clusters, hit_fq_clusters)
+# src = np.array(filtered_se_clusters)
+# dst = np.array(filtered_fq_clusters)
 
-filtered_se_image = make_image_from_coords(filtered_se_clusters, image_size=(sub_image_size, sub_image_size))
-filtered_fq_image = make_image_from_coords(filtered_fq_clusters, image_size=(sub_image_size, sub_image_size))
+# full_image_filtered_se = [] ## stores the filtered se_cluster coords
+# full_image_filtered_fq = [] ## stores the filtered fq_cluster coords
+# full_image_filtered_tile_fq = []
 
-compare_images([filtered_se_image, filtered_fq_image], rc=(1, 2), \
-    image_title_list=['filtered_se_image', 'filtered_fq_image'])
+# full_image_filtered_se.append(np.vstack((sub_image_size*row+src[:, 0], sub_image_size*col+src[:, 1])).T)
 
-io.imsave('filtered_se_image_point.tif', filtered_se_image)
-io.imsave('filtered_fq_image_point.tif', filtered_fq_image)
+# full_image_filtered_fq.append(np.vstack((sub_image_size*row+dst[:, 0], sub_image_size*col+dst[:, 1])).T)
 
-src = np.array(filtered_se_clusters)
-dst = np.array(filtered_fq_clusters)
-
-full_image_filtered_se = [] ## stores the filtered se_cluster coords
-full_image_filtered_fq = [] ## stores the filtered fq_cluster coords
-full_image_filtered_tile_fq = []
-
-full_image_filtered_se.append(np.vstack((sub_image_size*row+src[:, 0], sub_image_size*col+src[:, 1])).T)
-
-full_image_filtered_fq.append(np.vstack((sub_image_size*row+dst[:, 0], sub_image_size*col+dst[:, 1])).T)
-
-full_image_filtered_tile_fq.append(np.vstack((aligned_rc[0] - pad + sub_im_aligned_rc[0] + dst[:, 0], 
-                                                aligned_rc[1] - pad + sub_im_aligned_rc[1] + dst[:, 1])).T)
+# full_image_filtered_tile_fq.append(np.vstack((aligned_rc[0] - pad + sub_im_aligned_rc[0] + dst[:, 0], 
+#                                                 aligned_rc[1] - pad + sub_im_aligned_rc[1] + dst[:, 1])).T)
         
-full_image_filtered_se = np.vstack(full_image_filtered_se)
-full_image_filtered_fq = np.vstack(full_image_filtered_fq)
-full_image_filtered_tile_fq = np.vstack(full_image_filtered_tile_fq)
+# full_image_filtered_se = np.vstack(full_image_filtered_se)
+# full_image_filtered_fq = np.vstack(full_image_filtered_fq)
+# full_image_filtered_tile_fq = np.vstack(full_image_filtered_tile_fq)
 
-dataset_pickle_file_name = os.path.join(fastq_image_dir, 
-                                        "fq_read_dataset_{}".format(aligned_tile))
-with open(dataset_pickle_file_name, 'rb') as read_file:
-    dataset = pickle.load(read_file)
+# dataset_pickle_file_name = os.path.join(fastq_image_dir, 
+#                                         "fq_read_dataset_{}".format(aligned_tile))
+# with open(dataset_pickle_file_name, 'rb') as read_file:
+#     dataset = pickle.load(read_file)
 
-fq_cluster_pos_map = defaultdict()
+# fq_cluster_pos_map = defaultdict()
 
-fq_pos = np.array(dataset['target_fq_reads'])
-scaled_fq_pos = np.array(dataset['target_scaled_fq_reads'])
+# fq_pos = np.array(dataset['target_fq_reads'])
+# scaled_fq_pos = np.array(dataset['target_scaled_fq_reads'])
 
-# ## load fastq file for that tile
-pos_seq_dir = 'tile_based_pos_seq_dict'
-in_file_name = 'target_tile_{}_pos_seq_dict'.format(aligned_tile)
-in_file_path = os.path.join(pos_seq_dir, in_file_name)
-with open(in_file_path, 'rb') as read_file:
-    target_cluster_pos_seq_dict = pickle.load(read_file)
+# # ## load fastq file for that tile
+# pos_seq_dir = 'tile_based_pos_seq_dict'
+# in_file_name = 'target_tile_{}_pos_seq_dict'.format(aligned_tile)
+# in_file_path = os.path.join(pos_seq_dir, in_file_name)
+# with open(in_file_path, 'rb') as read_file:
+#     target_cluster_pos_seq_dict = pickle.load(read_file)
 
-for fq_cluster_in_tile, se_cluster, fq_cluster, se_sub_image_cluster, fq_sub_image_cluster in \
-    zip(full_image_filtered_tile_fq, full_image_filtered_se, full_image_filtered_fq, src, dst):
-    pos_in_fq = fq_pos[((scaled_fq_pos[:, 0] == fq_cluster_in_tile[0]) & 
-                        (scaled_fq_pos[:, 1] == fq_cluster_in_tile[1]))][0]
-    seq = target_cluster_pos_seq_dict[tuple(pos_in_fq)][5:]
-    cluster_dict = dict()
-    cluster_dict['fq_tile_image_pos'] = fq_cluster_in_tile
-    cluster_dict['se_image_pos'] = se_cluster
-    cluster_dict['fq_image_pos'] = fq_cluster
-    cluster_dict['seq'] = seq
-    cluster_dict['sub_image_se'] = se_sub_image_cluster
-    cluster_dict['sub_image_fq'] = fq_sub_image_cluster
-    fq_cluster_pos_map[tuple(pos_in_fq)] = cluster_dict
+# for fq_cluster_in_tile, se_cluster, fq_cluster, se_sub_image_cluster, fq_sub_image_cluster in \
+#     zip(full_image_filtered_tile_fq, full_image_filtered_se, full_image_filtered_fq, src, dst):
+#     pos_in_fq = fq_pos[((scaled_fq_pos[:, 0] == fq_cluster_in_tile[0]) & 
+#                         (scaled_fq_pos[:, 1] == fq_cluster_in_tile[1]))][0]
+#     seq = target_cluster_pos_seq_dict[tuple(pos_in_fq)][5:]
+#     cluster_dict = dict()
+#     cluster_dict['fq_tile_image_pos'] = fq_cluster_in_tile
+#     cluster_dict['se_image_pos'] = se_cluster
+#     cluster_dict['fq_image_pos'] = fq_cluster
+#     cluster_dict['seq'] = seq
+#     cluster_dict['sub_image_se'] = se_sub_image_cluster
+#     cluster_dict['sub_image_fq'] = fq_sub_image_cluster
+#     fq_cluster_pos_map[tuple(pos_in_fq)] = cluster_dict
 
-assign_out_dir = 'sub_image_assign_data'
-if not os.path.exists(assign_out_dir):
-    os.mkdir(assign_out_dir)
+# assign_out_dir = 'sub_image_assign_data'
+# if not os.path.exists(assign_out_dir):
+#     os.mkdir(assign_out_dir)
 
 
